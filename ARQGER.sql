@@ -11,6 +11,7 @@ BEGIN
             END IF;
    END;
    
+
    EXECUTE IMMEDIATE '
   CREATE TABLE LOG_PESSOA
 (
