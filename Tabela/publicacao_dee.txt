@@ -1,0 +1,231 @@
+
+create table publicacao_dee
+(
+
+  cod_docto             NUMBER(9) not null,
+  seq_doctoedit         NUMBER(3) not null,
+  cod_tipo_edital       NUMBER(3),
+  cod_dest              VARCHAR2(2),
+  dt_elim               DATE,
+  cod_mot_dest          NUMBER(3)
+  
+);
+
+comment on table publicacao_dee
+  is 'Para Documentos Eliminados Que Foram Publicados No Edital de Eliminação.';
+-- Add comments to the columns 
+comment on column publicacao_dee.cod_docto
+  is 'Referência ao documento.cod_docto';
+comment on column publicacao_dee.seq_doctoedit
+  is 'Seqüencial';
+comment on column publicacao_dee.cod_tipo_edital
+  is 'Código do tipo do edital de eliminação, referência ao tipo_edital_elimin.cod_tipo_edital';
+comment on column publicacao_dee.cod_dest
+  is 'Código de destinação, referência a destdocto.cod_dest';
+comment on column publicacao_dee.dt_elim
+  is 'Data que se tornou eliminável';
+comment on column publicacao_dee.cod_mot_dest
+  is 'Código do motivo de destinação, referência ao motivo_destinacao.cod_mot_dest';
+
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table publicacao_dee
+  add constraint publicacao_dee_pk primary key (cod_docto, seq_doctoedit);
+alter table publicacao_dee
+  add constraint publicacao_dee_fk_documento foreign key (cod_docto)
+  references documento (cod_docto);
+alter table publicacao_dee
+  add constraint publicacao_dee_fk_destdocto foreign key (cod_dest)
+  references destdocto (cod_dest);
+alter table publicacao_dee
+  add constraint publicacao_dee_fk_mot_dest foreign key (cod_mot_dest)
+  references motivo_destinacao (cod_mot_dest);
+alter table publicacao_dee
+  add constraint publicacao_dee_fk_tpedi_elimin foreign key (cod_tipo_edital)
+  references tipo_edital_elimin (cod_tipo_edital);
+
+-- Create/Recreate check constraints 
+alter table publicacao_dee
+  add constraint publicadee_ck_coddocto
+  check (cod_docto is not null);
+alter table publicacao_dee
+  add constraint publicadee_ck_coddest
+  check (cod_dest is not null);
+alter table publicacao_dee
+  add constraint publicadee_ck_codmotdest
+  check (cod_mot_dest is not null);
+alter table publicacao_dee
+  add constraint publicadee_ck_tipoedital
+  check (cod_tipo_edital is not null);
+
+-- Create/Recreate indexes   
+create index publicacao_dee_cod_docto on publicacao_dee (cod_docto)
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 160K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index publicacao_dee_mot_dest on publicacao_dee (cod_docto, cod_mot_dest, cod_tipo_edital, dt_elim)
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 160K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+create index publicacao_dee_tp_edit on publicacao_dee (cod_docto, cod_tipo_edital, dt_elim) 
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 160K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
+--Exemplo de Tabela de Log
+
+-- Rodar no schema ARQUIVO_HML
+
+create table LOG_publicacao_dee (
+COD_OPER_LOG        CHAR(1), 
+DATA_HORA_LOG       DATE,  
+SIGLA_USU_LOG       VARCHAR2(30),  
+MACHINE             VARCHAR2(64),  
+OS_USER             VARCHAR2(30), 
+COD_DOCTO VARCHAR2(10), 
+SEQ_DOCTOEDIT VARCHAR2(4), 
+COD_TIPO_EDITAL VARCHAR2(4), 
+COD_DEST VARCHAR2(2), 
+DT_ELIM DATE, 
+COD_MOT_DEST VARCHAR2(4)
+);
+/
+create index LOG_publicacao_dee_DTHR on LOG_publicacao_dee (DATA_HORA_LOG);
+
+/
+
+CREATE OR REPLACE TRIGGER PUBLICACAO_DEE_BI
+  before insert on publicacao_dee
+  for each row
+
+declare
+  -- local variables here
+begin
+  if :new.seq_doctoedit is null then
+     select nvl(max(seq_doctoedit),0)+1 into :new.seq_doctoedit
+            from publicacao_dee
+            where cod_docto=:new.cod_docto;
+  end if;
+end PUBLICACAO_DEE_BI;
+
+/
+
+-- Exemplo de trigger de log
+
+-- Rodar em ARQUIVO_HML
+
+--TRIGGER AFTER INSERT: publicacao_dee
+create or replace trigger publicacao_dee_AI
+  after insert on publicacao_dee
+  for each row
+begin
+  insert into LOG_publicacao_dee
+    (DATA_HORA_LOG,
+     SIGLA_USU_LOG,
+     COD_OPER_LOG,
+     MACHINE,
+     OS_USER,
+     COD_DOCTO, 
+     SEQ_DOCTOEDIT, 
+     COD_TIPO_EDITAL, 
+     COD_DEST, 
+     DT_ELIM, 
+     COD_MOT_DEST)
+  values
+    (SYSDATE,
+     NVL(GLOBAIS.CODUSER, USER),
+     'I',
+     NVL(GLOBAIS.MAQUINA, USERENV('TERMINAL')),
+     NVL(GLOBAIS.OSUSER, SYS_CONTEXT('USERENV', 'OS_USER')),
+     :NEW.COD_DOCTO, 
+     :NEW.SEQ_DOCTOEDIT, 
+     :NEW.COD_TIPO_EDITAL, 
+     :NEW.COD_DEST, 
+     :NEW.DT_ELIM, 
+     :NEW.COD_MOT_DEST);
+end;
+/
+
+--TRIGGER AFTER DELETE: publicacao_dee
+  create or replace trigger publicacao_dee_AD
+  after delete on publicacao_dee
+  for each row
+begin
+  insert into LOG_publicacao_dee
+    (DATA_HORA_LOG,
+     SIGLA_USU_LOG,
+     COD_OPER_LOG,
+     MACHINE,
+     OS_USER,
+     COD_DOCTO, 
+   SEQ_DOCTOEDIT, 
+   COD_TIPO_EDITAL, 
+   COD_DEST, 
+   DT_ELIM, 
+   COD_MOT_DEST)
+  values
+    (SYSDATE,
+     NVL(GLOBAIS.CODUSER, USER),
+     'D',
+     NVL(GLOBAIS.MAQUINA, USERENV('TERMINAL')),
+     NVL(GLOBAIS.OSUSER, SYS_CONTEXT('USERENV', 'OS_USER')),
+     :old.COD_DOCTO, 
+   :old.SEQ_DOCTOEDIT, 
+   :old.COD_TIPO_EDITAL, 
+   :old.COD_DEST, 
+   :old.DT_ELIM, 
+     :old.COD_MOT_DEST);
+end;
+/
+
+--TRIGGER AFTER UPDATE: publicacao_dee
+  create or replace trigger publicacao_dee_AU
+  after update on publicacao_dee
+  for each row
+begin
+  insert into LOG_publicacao_dee
+    (DATA_HORA_LOG,
+     SIGLA_USU_LOG,
+     COD_OPER_LOG,
+     MACHINE,
+     OS_USER,
+     COD_DOCTO, 
+     SEQ_DOCTOEDIT, 
+     COD_TIPO_EDITAL, 
+     COD_DEST, 
+     DT_ELIM, 
+     COD_MOT_DEST)
+  values
+    (SYSDATE,
+     NVL(GLOBAIS.CODUSER, USER),
+     'U',
+     NVL(GLOBAIS.MAQUINA, USERENV('TERMINAL')),
+     NVL(GLOBAIS.OSUSER, SYS_CONTEXT('USERENV', 'OS_USER')),
+     :old.COD_DOCTO, 
+     :old.SEQ_DOCTOEDIT,
+     decode(:old.COD_TIPO_EDITAL, :new.COD_TIPO_EDITAL, null, nvl(TO_CHAR(:old.COD_TIPO_EDITAL), chr(0))), 
+     decode(:old.COD_DEST, :new.COD_DEST, null, nvl(:old.COD_DEST, chr(0))), 
+     decode(:old.DT_ELIM, :new.DT_ELIM, null, nvl(TO_CHAR(:old.DT_ELIM, 'YYYY/MM/DD HH24:MI:SS'), chr(0))), 
+     decode(:old.COD_MOT_DEST, :new.COD_MOT_DEST, null, nvl(TO_CHAR(:old.COD_MOT_DEST), chr(0))));
+end;
+/
