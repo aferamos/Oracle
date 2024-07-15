@@ -1,0 +1,290 @@
+Erro a partir da linha : 6 no comando -
+DECLARE Pessoa_exist  PLS_INTEGER;
+
+BEGIN
+select count(*) into Pessoa_exist from user_tables where table_name = 'PESSOA';
+if Pessoa_exist = 1 then
+    execute immediate 'drop table PESSOA';
+end if;
+
+END;
+
+create table Pessoa (
+cd_pessoa NUMBER(10)    NOT NULL,
+nm_pessoa char(60),
+nm_email char(60),
+cd_sexo char(1),
+cd_status char(1),
+cd_acesso char(1),
+cd_usuario character(5) null,
+dt_cadastro timestamp,
+dt_alteracao timestamp,
+cd_telefone char(10),
+cd_celular char(10)
+);
+
+ALTER TABLE Pessoa ADD (
+  CONSTRAINT pk_pessoa primary key (cd_pessoa)
+  );
+
+CREATE SEQUENCE seq_pessoa START WITH 1;
+
+CREATE OR REPLACE TRIGGER pessoa_bir 
+BEFORE INSERT ON Pessoa 
+FOR EACH ROW
+
+BEGIN
+  SELECT seq_pessoa.NEXTVAL
+  INTO   :new.cd_pessoa
+  FROM   dual;
+END;
+Relatório de erros -
+Parâmetro IN ou OUT ausente do índice:: 1
+
+Procedimento PL/SQL concluído com sucesso.
+
+Erro a partir da linha : 6 no comando -
+DECLARE Pessoa_exist  PLS_INTEGER;
+
+BEGIN
+select count(*) into Pessoa_exist from user_tables where table_name = 'PESSOA';
+if Pessoa_exist = 1 then
+    execute immediate 'drop table PESSOA';
+end if;
+
+END;
+
+create table Pessoa (
+cd_pessoa NUMBER(10)    NOT NULL,
+nm_pessoa char(60),
+nm_email char(60),
+cd_sexo char(1),
+cd_status char(1),
+cd_acesso char(1),
+cd_usuario character(5) null,
+dt_cadastro timestamp,
+dt_alteracao timestamp,
+cd_telefone char(10),
+cd_celular char(10)
+);
+Relatório de erros -
+ORA-06550: linha 11, coluna 1:
+PLS-00103: Encontrado o símbolo "CREATE" 
+06550. 00000 -  "line %s, column %s:\n%s"
+*Cause:    Usually a PL/SQL compilation error.
+*Action:
+Erro a partir da linha : 6 no comando -
+DECLARE Pessoa_exist  PLS_INTEGER;
+
+BEGIN
+select count(*) into Pessoa_exist from user_tables where table_name = 'PESSOA';
+if Pessoa_exist = 1 then
+    execute immediate 'drop table PESSOA';
+end if;
+
+
+
+create table Pessoa (
+cd_pessoa NUMBER(10)    NOT NULL,
+nm_pessoa char(60),
+nm_email char(60),
+cd_sexo char(1),
+cd_status char(1),
+cd_acesso char(1),
+cd_usuario character(5) null,
+dt_cadastro timestamp,
+dt_alteracao timestamp,
+cd_telefone char(10),
+cd_celular char(10)
+);
+
+ALTER TABLE Pessoa ADD (
+  CONSTRAINT pk_pessoa primary key (cd_pessoa)
+  );
+
+CREATE SEQUENCE seq_pessoa START WITH 1;
+
+CREATE OR REPLACE TRIGGER pessoa_bir 
+BEFORE INSERT ON Pessoa 
+FOR EACH ROW
+END;
+Relatório de erros -
+ORA-06550: linha 11, coluna 1:
+PLS-00103: Encontrado o símbolo "CREATE" quando um dos seguintes símbolos era esperado:
+
+   ( começar case declare end exception sair for goto if loop
+   mod nulo pragma raise retornar selecionar atualizar while com
+   <um identificador>
+   <um identificador delimitado por aspas duplas>
+   <uma variável de ligação> << continuar fechar atual
+   deletar fetch lock insert aberto rollback savepoint set sql
+   executar commit forall intercalar pipe expurgar
+06550. 00000 -  "line %s, column %s:\n%s"
+*Cause:    Usually a PL/SQL compilation error.
+*Action:
+
+Procedimento PL/SQL concluído com sucesso.
+
+
+Table PESSOA criado.
+
+
+Table PESSOA alterado.
+
+
+Sequence SEQ_PESSOA criado.
+
+
+Trigger PESSOA_BIR compilado
+
+
+Procedimento PL/SQL concluído com sucesso.
+
+
+Table PESSOA_FISICA criado.
+
+
+Table PESSOA_FISICA alterado.
+
+
+Sequence SEQ_PESSOA_FISICA criado.
+
+
+Trigger PESSOA_FISICA_BIR compilado
+
+
+Procedimento PL/SQL concluído com sucesso.
+
+
+Table PESSOA_JURIDICA criado.
+
+
+Table PESSOA_JURIDICA alterado.
+
+
+Sequence SEQ_PESSOA_JURIDICA criado.
+
+
+Trigger PESSOA_JURIDICA_BIR compilado
+
+
+Procedimento PL/SQL concluído com sucesso.
+
+
+Table BENEFICIO criado.
+
+
+Table BENEFICIO alterado.
+
+
+Sequence SEQ_BENEFICIO criado.
+
+
+Trigger BENEFICIO_BIR compilado
+
+Erro a partir da linha : 173 no comando -
+insert into Beneficio (nm_beneficio, valor_beneficio, tm_beneficio, dt_beneficio, cd_status) values('Corte navalhado + tesoura', 25, '40m', 'now', 'A')
+Relatório de erros -
+ORA-01858: foi localizado um caractere não numérico onde se esperava um numérico
+
+Erro a partir da linha : 173 no comando -
+insert into Beneficio (nm_beneficio, valor_beneficio, tm_beneficio, dt_beneficio, cd_status) values('Corte navalhado + tesoura', 25.00, '40m', 'now', 'A')
+Relatório de erros -
+ORA-01858: foi localizado um caractere não numérico onde se esperava um numérico
+
+
+Erro a partir da linha : 173 no comando -
+insert into Beneficio (nm_beneficio, valor_beneficio, tm_beneficio, dt_beneficio, cd_status) values('Corte navalhado + tesoura', 25,00, '40m', 'now', 'A')
+Erro na Linha de Comandos : 173 Coluna : 13
+Relatório de erros -
+Erro de SQL: ORA-00913: valores demais
+00913. 00000 -  "too many values"
+*Cause:    
+*Action:
+
+Procedimento PL/SQL concluído com sucesso.
+
+Erro a partir da linha : 139 no comando -
+create table Beneficio(
+
+cd_beneficio NUMBER(10)    NOT NULL,
+
+nm_beneficio char(40),
+
+valor_beneficio numeric(10,2),
+
+tm_beneficio char(4),
+ 
+dt_beneficio timestamp,
+
+cd_status char(1) 
+
+)
+Relatório de erros -
+ORA-00955: nome já está sendo usado por um objeto existente
+00955. 00000 -  "name is already used by an existing object"
+*Cause:    
+*Action:
+
+Procedimento PL/SQL concluído com sucesso.
+
+
+Table BENEFICIO criado.
+
+
+Table BENEFICIO alterado.
+
+Erro a partir da linha : 161 no comando -
+CREATE SEQUENCE seq_beneficio START WITH 1
+Relatório de erros -
+ORA-00955: nome já está sendo usado por um objeto existente
+00955. 00000 -  "name is already used by an existing object"
+*Cause:    
+*Action:
+
+Trigger BENEFICIO_BIR compilado
+
+Erro a partir da linha : 173 no comando -
+insert into Beneficio (nm_beneficio, valor_beneficio, tm_beneficio, dt_beneficio, cd_status) values('Corte navalhado + tesoura', 25.00, '40m', 'now', 'A')
+Relatório de erros -
+ORA-01858: foi localizado um caractere não numérico onde se esperava um numérico
+
+Erro a partir da linha : 173 no comando -
+insert into Beneficio (cd_beneficio,nm_beneficio, valor_beneficio, tm_beneficio, dt_beneficio, cd_status) values(1,'Corte navalhado + tesoura', 25.00, '40m', 'now', 'A')
+Relatório de erros -
+ORA-01858: foi localizado um caractere não numérico onde se esperava um numérico
+
+
+Erro a partir da linha : 173 no comando -
+insert into Beneficio (nm_beneficio, tm_beneficio, dt_beneficio, cd_status) values(1,'Corte navalhado + tesoura', '40m', 'now', 'A')
+Erro na Linha de Comandos : 173 Coluna : 13
+Relatório de erros -
+Erro de SQL: ORA-00913: valores demais
+00913. 00000 -  "too many values"
+*Cause:    
+*Action:
+Erro a partir da linha : 173 no comando -
+insert into Beneficio (nm_beneficio, tm_beneficio, dt_beneficio, cd_status) values('Corte navalhado + tesoura', '40m', 'now', 'A')
+Relatório de erros -
+ORA-01858: foi localizado um caractere não numérico onde se esperava um numérico
+
+Erro a partir da linha : 173 no comando -
+insert into Beneficio (nm_beneficio, tm_beneficio, dt_beneficio) values('Corte navalhado + tesoura', '40m', 'now')
+Relatório de erros -
+ORA-01858: foi localizado um caractere não numérico onde se esperava um numérico
+
+
+Erro a partir da linha : 173 no comando -
+insert into Beneficio (nm_beneficio, tm_beneficio, dt_beneficio) values('Corte navalhado + tesoura', '40m', now)
+Erro na Linha de Comandos : 173 Coluna : 109
+Relatório de erros -
+Erro de SQL: ORA-00984: coluna não permitida aqui
+00984. 00000 -  "column not allowed here"
+*Cause:    
+*Action:
+
+1 linha inserido.
+
+
+1 linha inserido.
+
